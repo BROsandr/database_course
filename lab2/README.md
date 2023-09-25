@@ -153,3 +153,78 @@
 
     Не получается одновременно выводить *номер группы* и группировать по
     *структурным подразделениям*.
+
+5.  ## Задание 5.
+
+    > Самостоятельно разработайте 5 осмысленных запросов к базе данных,
+    > используя приведенные в данной лабораторной работе материалы.
+    > Вариант выбирается в соответствии с номером по списку.
+    >
+    > ![Alt text](image-9.png)
+
+    ~~16 % 10 == 6~~
+
+    1.  > **WHERE**, **ORDER BY**
+
+        > Вывести **ФИО**, **зп** *преподавателей*, у которых **зарплата** меньше средней зп по РФ (*65338*).
+        > Сортировать по зп в порядке возрастания.
+
+        ```pgsql
+        SELECT surname, name, patronymic, salary
+          FROM professor
+          WHERE salary::numeric < 65338
+          ORDER BY salary
+        ```
+
+        ![Alt text](image-12.png)
+    2.  > **WHERE**, **LIKE**
+
+        > Вывести **ФИО** всех преподавателей, у которых фамилия начинается на *Ме*.
+
+        ```pgsql
+        SELECT surname, name, patronymic
+          FROM professor
+          WHERE surname LIKE 'Ме%'
+        ```
+
+        ![Alt text](image-13.png)
+    3.  > **WHERE**, **GROUP BY**, **AS**, **REGEX**
+
+        > Вывести **ФИО**, **стаж**, и **академическую должность** всех преподавателей, у которых **стаж** от 10 до 20
+        > лет включительно, используя регулярные выражения.
+
+        ```pgsql
+        SELECT surname, name, patronymic, academic_title, experience
+          FROM professor
+          WHERE experience::text ~ '(1\d|20)'
+        ```
+
+        ![Alt text](image-15.png)
+    4.  > **WHERE**, **GROUP BY**, **ORDER BY**
+
+        > Подсчитать количество предметов по **zet**. Сортировать по **zet**. Вывести **количество предметов** и **zet**.
+
+        ```pgsql
+        SELECT count(*) as "Количество предметов", zet
+          FROM field
+          GROUP BY zet
+          ORDER BY zet
+        ```
+
+        ![Alt text](image-16.png)
+    5.  > **WHERE**, **GROUP BY**, **HAVING**, **ORDER BY**, **AS**, **AGG**
+
+        > Вывести **группы**, в которых больше 2ух студентов,
+        > родившихся после *01/06/2002*(д/м/г). Также вывести **кол-во студентов** в каждой группе,
+        > которые удовлетворяют запросу.
+
+        ```pgsql
+        SELECT students_group_number, count(*) as "Кол-во студентов"
+          FROM student
+          WHERE birthday > '01/06/2002'
+          GROUP BY students_group_number
+          HAVING count(*) > 2
+          ORDER BY "Кол-во студентов"
+        ```
+
+        ![Alt text](image-10.png)
