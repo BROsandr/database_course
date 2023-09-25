@@ -107,17 +107,49 @@
 
     ![Alt text](image-4.png)
 
-3.  # Задание 3.
+3.  ## Задание 3.
 
     > Напишите SQL запрос к учебной базе данных в соответствии с вариантом.
     >
     > Посчитайте ср. Оклад по должностям, вывести в порядке возрастания.
 
     ```pgsql
-    SELECT сurrent_position, AVG(salary::numeric)::numeric(10,2) AS "Average salary" 
+    SELECT сurrent_position, AVG(salary::numeric)::numeric(10,2) AS "Average salary"
       FROM professor
       GROUP BY сurrent_position
       ORDER BY "Average salary";
     ```
 
     ![Alt text](image-5.png)
+
+4.  ## Задание 4.
+
+    > Напишите SQL запросы к учебной базе данных в соответствии с вариантом.
+    >
+    > Вывести Номера Групп на Очном обучении и номера их структурных подразделений (больше 2),
+    > переименовать столбец Номера структурных подразделений сгруппировать их и сортировать.
+
+    *   Без группировки:
+
+        ```pgsql
+        SELECT students_group_number, enrolment_status, structural_unit_number AS "Номера структурных подразделений"
+          FROM students_group
+          WHERE enrolment_status = 'Очная' AND structural_unit_number > 2
+          ORDER BY structural_unit_number
+        ```
+
+        ![Alt text](image-8.png)
+    *   С группировкой:
+
+        ```pgsql
+        SELECT structural_unit_number AS "Номера структурных подразделений"
+          FROM students_group
+          WHERE enrolment_status = 'Очная' AND structural_unit_number > 2
+          GROUP BY structural_unit_number
+          ORDER BY structural_unit_number
+        ```
+
+        ![Alt text](image-6.png)
+
+    Не получается одновременно выводить *номер группы* и группировать по
+    *структурным подразделениям*.
