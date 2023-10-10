@@ -28,3 +28,19 @@
         ![Alt text](image.png)
 
     *   **ОТВЕТ**: Не все преподаватели трудоустроены.
+2.  ## Задание 2.
+
+    > Выведите Фамилии и Имена студентов, кто получил 5 по Базам данных.
+
+    *   **КОД**:
+
+        ```psql
+        SELECT s.surname, s.name, f.field_name, fc.mark 
+          FROM student AS s, field_comprehension AS fc, field AS f
+          WHERE s.student_id = fc.student_id AND f.field_id = fc.field
+          AND f.field_name ~ 'Базы данных' AND fc.mark = 5
+        ```
+
+    *   **OUTPUT**:
+
+        ![Alt text](image-1.png)
