@@ -15,7 +15,7 @@
 
     *   **КОД**:
 
-        ```psql
+        ```pgsql
         SELECT p.name, p.surname, p.patronymic, e.structural_unit_number
           FROM professor AS p
           LEFT OUTER JOIN employment AS e
@@ -34,7 +34,7 @@
 
     *   **КОД**:
 
-        ```psql
+        ```pgsql
         SELECT s.surname, s.name, f.field_name, fc.mark 
           FROM student AS s, field_comprehension AS fc, field AS f
           WHERE s.student_id = fc.student_id AND f.field_id = fc.field
@@ -51,7 +51,7 @@
 
     *   **КОД**:
 
-        ```psql
+        ```pgsql
         SELECT s.surname AS student_surname, s.students_group_number, p.surname AS professor_surname
           FROM student AS s, professor AS p
           WHERE s.surname = p.surname
