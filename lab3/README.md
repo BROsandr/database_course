@@ -32,6 +32,8 @@
 
     > Выведите Фамилии и Имена студентов, кто получил 5 по Базам данных.
 
+    ~~Попытка 1:~~
+
     *   **КОД**:
 
         ```pgsql
@@ -44,6 +46,24 @@
     *   **OUTPUT**:
 
         ![Alt text](image-1.png)
+
+    Попытка 2:
+
+    *   **КОД**:
+
+        ```pgsql
+        SELECT s.surname, s.name, f.field_name, fc.mark 
+          FROM student AS s
+          INNER JOIN field_comprehension AS fc
+          ON s.student_id = fc.student_id
+          INNER JOIN field AS f
+          ON f.field_id = fc.field
+          WHERE f.field_name ~ 'Базы данных' AND fc.mark = 5
+        ```
+
+    *   **OUTPUT**:
+
+        ![Alt text](image-3.png)
 
 3.  ## Задание 3.
 
