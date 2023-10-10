@@ -99,3 +99,30 @@
     *   **OUTPUT**:
 
         ![Alt text](image-5.png)
+
+5.  ## Задание 5.
+
+    > ![Alt text](image-6.png)
+
+    1.  > INNER JOIN
+
+        > Вывести **Фамилию** и **email** всех должников
+
+        *   **КОД**:
+
+            ```pgsql
+            SELECT s.surname, s.email
+              FROM student AS s
+              INNER JOIN debtor_students AS d
+              ON s.surname = d.surname AND s.name = d.name AND s.patronymic = d.patronymic
+            ```
+
+        *   **OUTPUT**:
+
+            ![Alt text](image-7.png)
+
+    2.  > INNER JOIN
+
+        > Вывести **Фамилию** преподавателя, который ставит больше всех оценок "2" за кокой либо предмет.
+
+        
