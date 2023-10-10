@@ -81,3 +81,21 @@
     *   **OUTPUT**:
 
         ![Alt text](image-4.png)
+
+4.  ## Задание 4.
+
+    > Выведите фамилию и имя всех студентов, кто учится заочно.
+
+    *   **КОД**:
+
+        ```pgsql
+        SELECT s.surname, s.name, g.enrolment_status
+          FROM student AS s
+          INNER JOIN students_group AS g
+          ON s.students_group_number = g.students_group_number
+          WHERE g.enrolment_status ~ 'Заочная'
+        ```
+
+    *   **OUTPUT**:
+
+        ![Alt text](image-5.png)
