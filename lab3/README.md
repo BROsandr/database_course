@@ -73,10 +73,11 @@
 
         ```pgsql
         SELECT s.surname AS student_surname, s.students_group_number, p.surname AS professor_surname
-          FROM student AS s, professor AS p
-          WHERE s.surname = p.surname
+          FROM student AS s
+          INNER JOIN professor AS p
+          ON s.surname = p.surname
         ```
 
     *   **OUTPUT**:
 
-        ![Alt text](image-2.png)
+        ![Alt text](image-4.png)
