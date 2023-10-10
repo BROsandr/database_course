@@ -13,18 +13,18 @@
     > |------------|-----------------------------------------------------------------------------------------------------------------|
     > | 4          | Сделайте проверку, все ли преподаватели трудоустроены.                                                          |
 
-    **КОД**:
+    *   **КОД**:
 
-    ```psql
-    SELECT p.name, p.surname, p.patronymic, e.structural_unit_number
-      FROM professor AS p
-      LEFT OUTER JOIN employment AS e
-      ON p.professor_id = e.professor_id
-      WHERE e.structural_unit_number IS null
-    ```
+        ```psql
+        SELECT p.name, p.surname, p.patronymic, e.structural_unit_number
+          FROM professor AS p
+          LEFT OUTER JOIN employment AS e
+          ON p.professor_id = e.professor_id
+          WHERE e.structural_unit_number IS null
+        ```
 
-    **OUTPUT**:
+    *   **OUTPUT**:
 
-    ![Alt text](image.png)
+        ![Alt text](image.png)
 
-    **ОТВЕТ**: Не все преподаватели трудоустроены.
+    *   **ОТВЕТ**: Не все преподаватели трудоустроены.
