@@ -195,13 +195,13 @@
 
               ```pgsql
               SELECT count(*)
-              FROM (SELECT s.surname
-                      FROM student AS s
-              
-                    INTERSECT
+                FROM (SELECT s.surname
+                        FROM student AS s
+                
+                      INTERSECT
 
-                    SELECT p.surname
-                      FROM professor AS p) AS res;
+                      SELECT p.surname
+                        FROM professor AS p) AS res;
               ```
 
           *   **OUTPUT**:
