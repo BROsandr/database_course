@@ -61,3 +61,18 @@
     выглядит следующим образом:
 
     ![Alt text](image.png)
+
+2.  ## Задание 2.
+
+    > Добавьте в таблицу Professor поле, содержащее его контактный телефон.
+    > Сделайте ограничение, позволяющее хранить номер телефона в формате:
+    > +7(XXX)XXX-XX-XX или 8(XXX)XXX-XX-XX
+
+    **КОД**:
+
+    ```pgsql
+    ALTER TABLE professor
+      ADD mobile_phone varchar(16)
+      CONSTRAINT mobile_phone_rus_format
+        CHECK (mobile_phone ~ '^(\+7|8)\(\d{3}\)\d{3}-\d{2}-\d{2}$');
+    ```
