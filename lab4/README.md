@@ -76,3 +76,20 @@
       CONSTRAINT mobile_phone_rus_format
         CHECK (mobile_phone ~ '^(\+7|8)\(\d{3}\)\d{3}-\d{2}-\d{2}$');
     ```
+
+3.  ## Задание 3.
+
+    1.  Добавляем нужно поле в нужную таблицу.
+
+        ```pgsql
+        ALTER TABLE students_group
+          ADD chieftain BIGINT
+        ```
+
+    1.  Делаем нужное поле **fkey**.
+
+        ```pgsql
+        ALTER TABLE students_group
+          ADD FOREIGN KEY(chieftain)
+            REFERENCES student(student_id)
+        ```
