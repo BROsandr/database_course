@@ -123,6 +123,87 @@
 
     2.  > INNER JOIN
 
-        > Вывести **Фамилию** преподавателя, который ставит больше всех оценок "2" за кокой либо предмет.
+        > Вывести **Фамилию** преподавателя,
+        > который ставит больше всех оценок "3" за какой-либо предмет.
 
-        
+        *   **КОД**:
+
+            ```pgsql
+            SELECT p.surname, count(*) as number_of_3
+              FROM professor AS p
+              INNER JOIN field AS f
+              ON p.professor_id = f.professor_id
+              INNER JOIN field_comprehension AS fc
+              ON fc.field = f.field_id
+              WHERE fc.mark = 3
+              GROUP BY p.professor_id
+              ORDER BY number_of_3 DESC
+              LIMIT 1
+            ```
+
+        *   **OUTPUT**:
+
+            ![Alt text](image-8.png)
+
+    3.  > RIGHT OUTER JOIN
+
+        > Вывести название предметов, по которым есть задолженности.
+
+        *   **КОД**:
+
+            ```pgsql
+            SELECT f.field_name, count(*) AS number_of_debtors
+              FROM field AS f
+              RIGHT OUTER JOIN debtor_students AS d
+              ON f.field_id = d.debt_subject_id::uuid
+              GROUP BY f.field_id
+              ORDER BY number_of_debtors DESC
+            ```
+
+        *   **OUTPUT**:
+
+            ![Alt text](image-9.png)
+
+      4.  > UNION
+
+          > Вывести студентов групп *ИВТ-42* и *ИВТ-43*
+
+          *   **КОД**:
+
+              ```pgsql
+              SELECT s.surname, s.students_group_number
+                FROM student AS s
+                WHERE students_group_number = 'ИВТ-42'
+
+              UNION
+
+              SELECT s.surname, s.students_group_number
+                FROM student AS s
+                WHERE students_group_number = 'ИВТ-43'
+              ```
+
+              *Замечание*: Это не единственный способ решения задачи.
+          *   **OUTPUT**:
+
+              ![Alt text](image-10.png)
+
+      5.  > INTERSECT
+
+          > Подсчитать количество однофамильцев в отношении преподаватель-студент.
+
+          *   **КОД**:
+
+              ```pgsql
+              SELECT count(*)
+              FROM (SELECT s.surname
+                      FROM student AS s
+              
+                    INTERSECT
+
+                    SELECT p.surname
+                      FROM professor AS p) AS res;
+              ```
+
+          *   **OUTPUT**:
+
+              ![Alt text](image-11.png)
