@@ -79,17 +79,87 @@
 
 3.  ## Задание 3.
 
-    1.  Добавляем нужно поле в нужную таблицу.
+    > Добавьте в таблицу *Students_group* поле, содержащее информацию о старосте.
+    > Старостой группы может быть только один из студентов, обучающихся в ней.
+
+    **ПЛАН**:
+
+    Допустим мы решим выполнять через добавления **CONSTRAINT** на поле в *students_group*, чтобы
+    сделать ограничение на группу старосты ~~возможно также сделать через *trigger* в *sql*~~
+
+    Хорошо, если это поле будет **FOREIGN KEY** идентификатор студента,
+    тк мы не хотим иметь проблем с поддержкой.
+
+    Возникает циклическая зависимость между таблицами *students_group* и *student*
+    (*номер группы* - **fkey** для *student* и **pkey** для *students_group*,
+    а *номер студбилета* - **fkey** для *students_group* и **pkey** для *student*).
+    Циклические зависимости создадут проблемы манипуляции данными.
+
+    Решим следующим образом: создадим таблицу *chieftain*, которая будет содержать информацию
+    о старосте группы. В ней будут колонки: *номер студбилета*, *номер группы*.
+
+    1.  *номер студбилета*, *номер группы* - **fkey**, ссылается на *номер студбилета*,
+        *номер группы* в *student*.
+    1.  Также колонки *номер студбилета*, *номер группы* в *student* сделаем **UNIQUE**.
+    1.  **PRIMARY KEY** - вся строка.
+    1.  *номер группы* - **UNIQUE**.
+    1.  *номер студбилета* - **UNIQUE**.
+
+    Таким образом мы запрещаем вставлять несуществующие комбинации *номер студбилета*,
+    *номер группы* и создаем автоматическую проверку на то, что студент из нужной группы.
+    Нет циклических зависимостей.
+
+    **ВЫПОЛНЕНИЕ**:
+
+    1.  Сделаем колонки *student_id*, *students_group_number* в таблице *student* **UNIQUE**.
 
         ```pgsql
-        ALTER TABLE students_group
-          ADD chieftain BIGINT
+        ALTER TABLE student ADD UNIQUE (student_id, students_group_number);
         ```
 
-    1.  Делаем нужное поле **fkey**.
+    1.  Создаем таблицу *chieftain* с нужными **CONSTRAINT**.
 
         ```pgsql
-        ALTER TABLE students_group
-          ADD FOREIGN KEY(chieftain)
-            REFERENCES student(student_id)
+        CREATE TABLE chieftain(
+          student_id BIGINT NOT NULL,
+          students_group_number VARCHAR(7) NOT NULL,
+          PRIMARY KEY(student_id, students_group_number),
+          FOREIGN KEY(student_id, students_group_number)
+            REFERENCES student(student_id, students_group_number)
+            ON DELETE CASCADE,
+          UNIQUE(student_id),
+          UNIQUE(students_group_number)
+        );
         ```
+
+    1.  Пробуем добавить валидную строку.
+
+        ![Alt text](image-1.png)
+
+        ```pgsql
+        INSERT INTO chieftain (student_id, students_group_number)
+          VALUES              (813514,     'ИВТ-43');
+        ```
+
+        Получаем:
+
+        ```
+        INSERT 0 1
+        ```
+
+    1.  Пробуем добавить невалидную строку (студент не из той группы).
+
+        ```pgsql
+        INSERT INTO chieftain (student_id, students_group_number)
+          VALUES              (815274,     'ИВТ-42');
+        ```
+
+        Получаем:
+
+        ```
+        ERROR:  insert or update on table "chieftain" violates foreign key constraint "chieftain_student_id_students_group_number_fkey"
+        DETAIL:  Key (student_id, students_group_number)=(815274, ИВТ-42) is not present in table "student".
+        SQL state: 23503
+        ```
+
+    Задание выполнено.
