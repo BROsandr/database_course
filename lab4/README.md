@@ -286,3 +286,22 @@
             REFERENCES scholarship(scholarship_id)
             ON DELETE CASCADE
         ```
+
+    Продемонстрируем работу привилегий:
+
+    1.  Вставим в таблицу привилегию:
+
+        ```pgsql
+        INSERT INTO privilege (effect,       condition)
+          VALUES              ('INT += 100', 'для студентов ИВТ-41');
+        ```
+    1.  Соединим привилегии и студентов:
+
+        ```pgsql
+        INSERT INTO student_privilege (privilege_id, student_id)
+          (SELECT 1, student_id
+            FROM student
+            WHERE students_group_number = 'ИВТ-41');
+        ```
+
+    ![Alt text](image-3.png)
