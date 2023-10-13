@@ -222,4 +222,64 @@
 
 5.  ## Задание 5.
 
-    Выполнено в [задании 4](#задание-4).
+    > В соответствии с вариантом доработайте физическую модель базы данных в СУБД PostgreSQL.
+
+    На основе [задания 4](#задание-4) доработаем модель.
+
+    1.  Создаем таблицу *scholarship*:
+
+        ```pgsql
+        CREATE TABLE scholarship(
+          scholarship_id SERIAL,
+          condition      TEXT,
+          sum            MONEY NOT null,
+
+          PRIMARY KEY(scholarship_id)
+        );
+        ```
+
+    2.  Создаем таблицу *privilege*:
+
+        ```pgsql
+        CREATE TABLE privilege(
+          privilege_id SERIAL,
+          effect       TEXT,
+          condition    TEXT,
+          sum          MONEY,
+
+          PRIMARY KEY(privilege_id)
+        );
+        ```
+
+    3.  Создаем таблицу *student_privilege*:
+
+        ```pgsql
+        CREATE TABLE student_privilege(
+          privilege_id INTEGER,
+          student_id   INTEGER,
+
+          PRIMARY KEY(privilege_id, student_id),
+          FOREIGN KEY(privilege_id)
+            REFERENCES privilege(privilege_id)
+            ON DELETE CASCADE,
+          FOREIGN KEY(student_id)
+            REFERENCES student(student_id)
+            ON DELETE CASCADE
+        );
+        ```
+
+    4.  Добавляем столбец *scholarship_id* в таблицу *student*:
+
+        ```pgsql
+        ALTER TABLE student
+          ADD scholarship_id INTEGER
+        ```
+
+        И устанавливаем **CONSTRAINT** на этот столбец:
+
+        ```pgsql
+        ALTER TABLE student
+          ADD FOREIGN KEY(scholarship_id)
+            REFERENCES scholarship(scholarship_id)
+            ON DELETE CASCADE
+        ```
