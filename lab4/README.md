@@ -172,7 +172,53 @@
 
     >	Добавить возможность получения студентами льгот и стипендии
 
-    
+    Проработаем задание на *логическом уровне*.
+
+    **ER-диаграмма**:
+
+    ![Alt text](image-2.png)
+
+    **КОД НА DBML**:
+
+    ```dbml
+    Table student {
+      student_id            integer       [primary key]
+      surname               character(30)
+      name                  character(30)
+      patronymic            character(30)
+      students_group_number character(7)
+      birthday              date
+      email                 character(30) [unique]
+      scholarship_id        integer
+    }
+
+    Table scholarship {
+      scholarship_id serial [primary key]
+      condition      text
+      sum            money  [not null]
+    }
+
+    Table student_privilege {
+      privilege_id   integer
+      student_id     integer
+
+      Indexes {
+        (privilege_id, student_id) [pk]
+      }
+    }
+
+    Table privilege {
+      privilege_id serial [primary key]
+      effect       text
+      condition    text
+      sum          money  [null]
+    }
+
+    Ref: student.student_id             < student_privilege.student_id
+    Ref: student_privilege.privilege_id > privilege.privilege_id
+
+    Ref: student.scholarship_id > scholarship.scholarship_id
+    ```
 
 5.  ## Задание 5.
 
