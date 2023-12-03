@@ -188,3 +188,92 @@
     ![Alt text](image-7.png)
 
 5.  ## Задание 5
+
+    > Создайте триггер, который запрещает добавление студента, возраст которого превышает 100 лет
+
+    **ТРИГГЕРНАЯ ФУНКЦИЯ**:
+
+    ```pgsql
+    CREATE OR REPLACE FUNCTION check_student_age()
+        RETURNS TRIGGER
+        LANGUAGE PLPGSQL
+        AS
+      $$
+      DECLARE
+        max_birthday DATE := CURRENT_DATE - INTERVAL '100 years';
+      BEGIN
+        IF (NEW.birthday < max_birthday) THEN
+          RAISE EXCEPTION 'Student age cannot exceed 100 years';
+        END IF;
+        RETURN NEW;
+      END;
+      $$
+    ```
+
+    **ТРИГГЕР**:
+
+    ```pgsql
+    CREATE TRIGGER check_age
+      BEFORE INSERT OR UPDATE
+      ON student
+      FOR EACH ROW
+      EXECUTE PROCEDURE check_student_age();
+    ```
+
+    Пробуем обновить *birthday* студента с `student_id = 838389` на *2000-01-01* (валидно):
+
+    **КОД**:
+
+    ```sql
+    UPDATE student
+      SET   birthday   = '2000-01-01'
+      WHERE student_id = 838389
+    ```
+
+    Выведем *birthday* студента с `student_id = 838389`:
+
+    **КОД**:
+
+    ```sql
+    SELECT birthday
+      FROM student
+      WHERE student_id = 838389
+    ```
+
+    **OUTPUT**:
+
+    ![Alt text](image-8.png)
+
+    Пробуем обновить *birthday* студента с `student_id = 838389` на *1900-01-01* (невалидно):
+
+    **КОД**:
+
+    ```sql
+    UPDATE student
+      SET   birthday   = '1900-01-01'
+      WHERE student_id = 838389
+    ```
+
+    **OUTPUT**:
+
+    ```
+    ERROR:  Student age cannot exceed 100 years
+    CONTEXT:  PL/pgSQL function check_student_age() line 6 at RAISE
+    SQL state: P0001
+    ```
+
+    Убедимся, что *birthday* студента с `student_id = 838389` не обновился:
+
+    **КОД**:
+
+    ```sql
+    SELECT birthday
+      FROM student
+      WHERE student_id = 838389
+    ```
+
+    **OUTPUT**:
+
+    ![Alt text](image-9.png)
+
+    *birthday* не обновился. Так и должно быть.
