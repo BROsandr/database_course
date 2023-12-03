@@ -49,3 +49,60 @@
     NOTICE:  реальная занятость: 5
     ...
     ```
+
+2.  ## Задание 2
+
+    > Создайте процедуру добавления/изменения ученого звания у преподавателя
+
+    **ПРОЦЕДУРА**:
+
+    ```pgsql
+    CREATE OR REPLACE PROCEDURE set_academic_title(professor_id_ bigint, academic_title_ varchar(40))
+      LANGUAGE SQL
+      AS $$
+      UPDATE professor
+        SET academic_title = academic_title_
+        WHERE professor_id = professor_id_;
+      $$;
+    ```
+
+    Выведем *ученое звание* у `professor_id = 81001` *ДО* вызова процедуры:
+
+    **КОД**:
+
+    ```sql
+    SELECT academic_title
+      FROM professor
+      WHERE professor_id = 81001
+    ```
+
+    **OUTPUT**:
+
+    ![Alt text](image-3.png)
+
+    Выполним процедуру с помощью скрипта:
+
+    ```pgsql
+    do
+    $$
+    BEGIN
+      CALL set_academic_title(81001, 'архимаг');
+    END
+    $$;
+    ```
+
+    Выведем *ученое звание* у `professor_id = 81001` *ПОСЛЕ* вызова процедуры:
+
+    **КОД**:
+
+    ```sql
+    SELECT academic_title
+      FROM professor
+      WHERE professor_id = 81001
+    ```
+
+    **OUTPUT**:
+
+    ![Alt text](image-4.png)
+
+3.  ## Задание 3
