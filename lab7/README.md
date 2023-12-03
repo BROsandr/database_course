@@ -106,3 +106,42 @@
     ![Alt text](image-4.png)
 
 3.  ## Задание 3
+
+    > Сделайте функцию, которая выводит всех студентов по определенной группе
+
+    **СОСТАВНОЙ ТИП *student_t***:
+
+    ```pgsql
+    CREATE TYPE student_t AS(
+      student_id            INTEGER,
+      students_group_number VARCHAR(7),
+      surname               VARCHAR(30),
+      name                  VARCHAR(30),
+      patronymic            VARCHAR(30)
+    );
+    ```
+
+    **ФУНКЦИЯ**:
+
+    ```pgsql
+    CREATE OR REPLACE FUNCTION select_students(students_group_number_ VARCHAR(7)) RETURNS SETOF student_t
+      LANGUAGE SQL
+      AS $$
+      SELECT student_id, students_group_number, surname, name, patronymic
+        FROM student
+        WHERE students_group_number = students_group_number_
+      $$;
+    ```
+
+    Выведем студентов группы *ИВТ-41*:
+
+    **КОД**:
+
+    ```pgsql
+    SELECT *
+      FROM select_students('ИВТ-41')
+    ```
+
+    **OUTPUT**:
+
+    ![Alt text](image-6.png)
