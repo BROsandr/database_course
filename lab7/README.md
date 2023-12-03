@@ -145,3 +145,46 @@
     **OUTPUT**:
 
     ![Alt text](image-6.png)
+
+4.  ## Задание 4
+
+    > Создайте процедуру удаления ученого звания
+
+    **ПРОЦЕДУРА**:
+
+    ```pgsql
+    CREATE OR REPLACE PROCEDURE del_academic_title(professor_id_ bigint)
+      LANGUAGE SQL
+      AS $$
+      UPDATE professor
+        SET academic_title = NULL
+        WHERE professor_id = professor_id_;
+      $$;
+    ```
+
+    Выполним процедуру с помощью скрипта:
+
+    ```pgsql
+    do
+    $$
+    BEGIN
+      CALL del_academic_title(81001);
+    END
+    $$;
+    ```
+
+    Выведем *ученое звание* у `professor_id = 81001` *ПОСЛЕ* вызова процедуры:
+
+    **КОД**:
+
+    ```sql
+    SELECT academic_title
+      FROM professor
+      WHERE professor_id = 81001
+    ```
+
+    **OUTPUT**:
+
+    ![Alt text](image-7.png)
+
+5.  ## Задание 5
