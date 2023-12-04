@@ -60,13 +60,8 @@
     Добавим функцию `prepareSubjects`:
 
     ```cpp
-    QString prepareSubjects(QString initial_subject_qstr) {
-        std::string initial_subject_str{initial_subject_qstr.toStdString()};
-        initial_subject_str.erase(
-                    std::remove_if(initial_subject_str.begin(), initial_subject_str.end(),
-                                  [](unsigned char x) { return ((x == '"') || (x == '\'')); }),
-                                            initial_subject_str.end());
-        std::stringstream ss(initial_subject_str);
+    QString prepareSubjects(QString initial_subject_str) {
+        std::stringstream ss(initial_subject_str.toStdString());
         std::string token, result;
 
         while(std::getline(ss, token, ',')) {
