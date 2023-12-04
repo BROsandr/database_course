@@ -60,7 +60,7 @@
     Добавим функцию `prepareSubjects`:
 
     ```cpp
-    QString prepareSubjects(QString initial_subject_str) {
+    QString Diary::prepareSubjects(QString initial_subject_str) {
         std::stringstream ss(initial_subject_str.toStdString());
         std::string token, result;
 
@@ -75,6 +75,15 @@
 
         return QString::fromStdString(result);
     }
+    ```
+
+    В класс `Diary` добавим:
+
+    ```cpp
+    private:
+      ...
+      QString prepareSubjects(QString initial_subject_qstr);
+      ...
     ```
 
     Тестовый студент:
@@ -102,7 +111,7 @@
     Изменим фукнцию `prepareSubjects`:
 
     ```cpp
-    QString prepareSubjects(QString initial_subject_qstr) {
+    QString Diary::prepareSubjects(QString initial_subject_qstr) {
         std::string initial_subject_str{initial_subject_qstr.toStdString()};
         CorrectApostrof(initial_subject_str);
         std::stringstream ss(initial_subject_str);
@@ -124,13 +133,22 @@
     И добавим предложенную в лабораторной работе фукнкцию `CorrectApostrof`:
 
     ```cpp
-    void CorrectApostrof(std::string &query)
+    void Diary::CorrectApostrof(std::string &query)
     {
     size_t pos;
       while ((pos = query.find('\'')) != std::string::npos) {
         query.replace(pos, 1, "`");
       }
     }
+    ```
+
+    В класс `Diary` добавим:
+
+    ```cpp
+    private:
+      ...
+      void CorrectApostrof(std::string &query);
+      ...
     ```
 
     Примеры SQL-инъекций, которые ломали БД до введения защиты:
