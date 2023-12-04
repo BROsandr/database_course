@@ -162,3 +162,86 @@
         ```
 
         Строка из теории к лабе.
+
+3.  ## Задание 3
+
+    > Добавьте в программу автоматическую блокировку текущей учетной записи в случае
+    > попытки выполнить SQL –инъекцию, сопровождаемую сообщением о том, что учетная
+    > запись заблокирована (для того, чтобы определить, заблокирован пользователь или нет,
+    > добавляется еще одно поле в базе данных пользователя *is_blocked*). Окно с информацией о
+    > блокировке должно отображаться поверх всех других окон и содержать кнопку выхода из
+    > учетной записи. При попытке зайти в данную учетную запись снова окно о блокировке
+    > вновь должно отображаться перед пользователем.
+    > Зайдите под любым пользователем и выполните попытку SQL –инъекции.
+    > Продемонстрируйте результат.
+
+    Добавим поле *is_blocked* в БД:
+
+    ```sql
+    ALTER TABLE users
+      ADD is_blocked BOOL DEFAULT FALSE;
+    ```
+
+    ```cpp
+    void Diary::blockUser() {
+        QMessageBox msgBox;
+        msgBox.setText("Blocked");
+        msgBox.setInformativeText("Ваш аккаунт заблокирован");
+        QPushButton *exitButton = msgBox.addButton(QMessageBox::Ok);
+        exitButton->setText("Выйти");
+
+        int ret = msgBox.exec();
+
+        if (ret == QMessageBox::Ok) {
+          // user clicked OK button
+            emit blocked();
+        }
+    }
+    ```
+
+    ```cpp
+    void Diary::CorrectApostrof(std::string &query)
+    {
+    size_t pos;
+      while ((pos = query.find('\'')) != std::string::npos) {
+        query.replace(pos, 1, "`");
+        blockUser();
+      }
+    }
+    ```
+
+    В класс `Diary` добавим:
+
+    ```cpp
+    signals:
+      void blocked();
+
+    private:
+      ...
+      void blockUser();
+      ...
+    ```
+
+    В классе `Student` перенесем поле `diary_` в публичный скоуп.
+
+    В `MainWindow` добавим:
+
+    ```cpp
+    private slots:
+      void blocked();
+    ```
+
+    ```cpp
+    MainWindow::MainWindow(QWidget *parent)
+        : QMainWindow(parent)
+        , ui(new Ui::MainWindow)
+    {
+      ...
+      connect(student_interface_->diary_, &Diary::blocked, this, &MainWindow::blocked);
+    }
+
+    ```cpp
+    void MainWindow::blocked() {
+      stackedWidget->setCurrentWidget(login_form_);
+    }
+    ```
