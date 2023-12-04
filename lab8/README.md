@@ -99,13 +99,48 @@
     > попытки SQL - инъекции программа должна работать в штатном режиме с возможностью
     > продолжать поиск предметов.
 
-    Составленный запрос защищен от *SQL-инъекции*, тк все содержимое либо оборачивается в кавычки
-    `'`, либо разбивается по запятой и разбитые части оборачиваются в кавычки.
+    Изменим фукнцию `prepareSubjects`:
 
-    ![Alt text](image-2.png)
+    ```cpp
+    QString prepareSubjects(QString initial_subject_qstr) {
+        std::string initial_subject_str{initial_subject_qstr.toStdString()};
+        CorrectApostrof(initial_subject_str);
+        std::stringstream ss(initial_subject_str);
+        std::string token, result;
 
-    Данная строка в поиске должна была привести к тому, что будут отображены все оценки, чего не
-    происходит.
+        while(std::getline(ss, token, ',')) {
+            // Remove spaces
+            token = trim(token);
+            result += "'" + token + "', ";
+        }
 
+        // Remove the last comma and space
+        result = result.substr(0, result.length()-2);
 
-    ') OR 1=1; --'
+        return QString::fromStdString(result);
+    }
+    ```
+
+    И добавим предложенную в лабораторной работе фукнкцию `CorrectApostrof`:
+
+    ```cpp
+    void CorrectApostrof(std::string &query)
+    {
+    size_t pos;
+      while ((pos = query.find('\'')) != std::string::npos) {
+        query.replace(pos, 1, "`");
+      }
+    }
+    ```
+
+    Примеры SQL-инъекций, которые ломали БД до введения защиты:
+    1.  ```sql
+        ') OR 1=1; --'`
+        ```
+
+        Данная строка в поиске приводила к тому, что отображались все оценки.
+    1.  ```sql
+        '1' OR 1=1; update field_comprehension set mark = 5 where student_id=856271 ;--'
+        ```
+
+        Строка из теории к лабе.
